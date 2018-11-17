@@ -54,26 +54,47 @@ def change_color(img, box):
     img[box[1]:box[3]+1,box[0]:box[2]+1] = button
     return img
 
+# def change_size(img, box):
+#     button = img[box[1]:box[3]+1,box[0]:box[2]+1]
+#     height, width, channel = button.shape
+#     button = Image.fromarray(button.astype('uint8')).convert('RGB')
+#     #button.show()
+#     k = random.uniform(0.5, 3)
+#     new_width = int(width*k)
+#     new_height = int(height*k)
+#     button = button.resize((new_width, new_height), Image.ANTIALIAS)
+    
+#     left = (new_width - width)/2
+#     top = (new_height - height)/2
+#     right = (width + new_width)/2
+#     bottom = (height + new_height)/2
+#     #button.show()
+#     button = button.crop((left, top, right, bottom))
+#     button = button.resize((width, height), Image.ANTIALIAS)
+#     #button.show()
+#     img[box[1]:box[3]+1,box[0]:box[2]+1] = np.array(button)
+#     return img
+
 def change_size(img, box):
     button = img[box[1]:box[3]+1,box[0]:box[2]+1]
     height, width, channel = button.shape
-    button = Image.fromarray(button.astype('uint8')).convert('RGB')
-    #button.show()
     k = random.uniform(0.5, 3)
     new_width = int(width*k)
     new_height = int(height*k)
-    button = button.resize((new_width, new_height), Image.ANTIALIAS)
+    button = cv2.resize(button, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
     
-    left = (new_width - width)/2
-    top = (new_height - height)/2
-    right = (width + new_width)/2
-    bottom = (height + new_height)/2
-    #button.show()
-    button = button.crop((left, top, right, bottom))
-    button = button.resize((width, height), Image.ANTIALIAS)
-    #button.show()
+    left = int((new_width - width)/2)
+    top = int((new_height - height)/2)
+    right = int((width + new_width)/2)
+    bottom = int((height + new_height)/2)
+
+    button = button[top:bottom, left:right].copy()
+
+    button = cv2.resize(button, (width, height), interpolation=cv2.INTER_CUBIC)
+    
     img[box[1]:box[3]+1,box[0]:box[2]+1] = np.array(button)
     return img
+    
 
 def modify_images(train_batch):
     x_batch = []
