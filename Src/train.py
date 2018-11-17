@@ -99,9 +99,16 @@ def change_size(img, box):
 def modify_images(train_batch):
     x_batch = []
     for i in train_batch:
-        chance = random.randint(0,1)
+        
         img = i[0].copy()
         box = i[1].copy()
+        
+        a = box[2] - box[0]
+        b = box[3] - box[1]
+        if (a < 0 or b < 0):
+            chance = random.randint(0,0)
+        else:
+            chance = random.randint(0,1)
         if (chance == 0):
             x_batch.append(change_color(img, box))
         else:
@@ -144,6 +151,8 @@ train_data, test_data = load()
 print(len(train_data))
 train_data = [x for x in train_data if len(x[1]) == 4]
 print(len(train_data))
+
+l = [x for x in train_data if (x[1][2] - x[1][0] < 0 or x[1][3] - x[1][1] < 0)]
 
 print(len(test_data))
 test_data = [x for x in test_data if len(x[1]) == 4]
@@ -214,8 +223,6 @@ while True:
             x_batch = np.array([a / 127.5 - 1 for a in x_batch])
             
             x_batch_modified = modify_images(train_batch)
-            img = Image.fromarray(x_batch_modified[0].astype('uint8')).convert('RGB')
-            img.show()
             x_batch_modified = np.array([a / 127.5 - 1 for a in x_batch_modified])
             
             points_batch, mask_batch = get_points([i[1] for i in train_batch])
@@ -247,8 +254,6 @@ while True:
         x_batch = np.array([a / 127.5 - 1 for a in x_batch])
         
         x_batch_modified = modify_images(test_batch)
-        img = Image.fromarray(x_batch_modified[0].astype('uint8')).convert('RGB')
-        img.show()
         x_batch_modified = np.array([a / 127.5 - 1 for a in x_batch_modified])
         
         points_batch, mask_batch = get_points([i[1] for i in test_batch])
