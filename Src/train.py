@@ -152,7 +152,7 @@ print(len(train_data))
 train_data = [x for x in train_data if len(x[1]) == 4]
 print(len(train_data))
 
-l = [x for x in train_data if (x[1][2] - x[1][0] < 0 or x[1][3] - x[1][1] < 0)]
+l = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) < 0 or int(x[1][3]) - int(x[1][1]) < 0)]
 print(len(l))
 
 print(len(test_data))
