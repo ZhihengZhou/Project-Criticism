@@ -102,9 +102,11 @@ def modify_images(train_batch):
         
         img = i[0].copy()
         box = i[1].copy()
+        box = [int(x) for x in box]
         
         a = box[2] - box[0]
         b = box[3] - box[1]
+        
         if (a < 0 or b < 0):
             chance = random.randint(0,0)
         else:
