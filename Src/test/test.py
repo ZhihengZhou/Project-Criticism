@@ -5,6 +5,7 @@ import tqdm
 import os
 import matplotlib.pyplot as plt
 import sys
+import random
 sys.path.append('..')
 from network256 import Network
 from load import load_test, load
@@ -19,7 +20,7 @@ test_data = load_test()
 print(len(test_data))
 test_data = [x for x in test_data if len(x[1]) == 4]
 print(len(test_data))
-test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) < 0 or int(x[1][3]) - int(x[1][1]) < 0)]
+test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
 print(len(test_data))
 
 def test():
