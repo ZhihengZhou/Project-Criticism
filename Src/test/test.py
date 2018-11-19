@@ -6,6 +6,7 @@ import os
 import matplotlib.pyplot as plt
 import sys
 import random
+from PIL import Image
 sys.path.append('..')
 from network256 import Network
 from load import load_test, load
