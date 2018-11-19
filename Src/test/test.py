@@ -8,6 +8,7 @@ import sys
 sys.path.append('..')
 from network256 import Network
 from load import load_test, load
+from train import change_color, change_size, modify_images
 
 
 # Hyperparameters
@@ -19,17 +20,20 @@ test_data = load_test()
 print(len(test_data))
 test_data = [x for x in test_data if len(x[1]) == 4]
 print(len(test_data))
+test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) < 0 or int(x[1][3]) - int(x[1][1]) < 0)]
+print(len(test_data))
 
 def test():
     
     x = tf.placeholder(tf.float32, [BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 3])
+    x_modified = tf.placeholder(tf.float32, [BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 3])
     mask = tf.placeholder(tf.float32, [BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 1])
     local_x = tf.placeholder(tf.float32, [BATCH_SIZE, LOCAL_SIZE, LOCAL_SIZE, 3])
     global_completion = tf.placeholder(tf.float32, [BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 3])
     local_completion = tf.placeholder(tf.float32, [BATCH_SIZE, LOCAL_SIZE, LOCAL_SIZE, 3])
     is_training = tf.placeholder(tf.bool, [])
 
-    model = Network(x, mask, local_x, global_completion, local_completion, is_training, batch_size=BATCH_SIZE)
+    model = Network(x, x_modified, mask, local_x, global_completion, local_completion, is_training, batch_size=BATCH_SIZE)
     sess = tf.Session()
     init_op = tf.global_variables_initializer()
     sess.run(init_op)
@@ -45,19 +49,29 @@ def test():
     cnt = 0
     for i in tqdm.tqdm(range(step_num)):
         test_batch = test_data[i * BATCH_SIZE:(i + 1) * BATCH_SIZE]
+        
         x_batch = np.array([i[0] for i in test_batch])
         x_batch = np.array([a / 127.5 - 1 for a in x_batch])
+        
+        x_batch_modified = modify_images(test_batch)
+        x_batch_modified = np.array([a / 127.5 - 1 for a in x_batch_modified])
+        
         _, mask_batch = get_points([i[1] for i in test_batch])
-        completion = sess.run(model.completion, feed_dict={x: x_batch, mask: mask_batch, is_training: False})
+        completion = sess.run(model.completion, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
         for i in range(BATCH_SIZE):
             cnt += 1
             raw = x_batch[i]
             raw = np.array((raw + 1) * 127.5, dtype=np.uint8)
-            masked = raw * (1 - mask_batch[i]) + np.ones_like(raw) * mask_batch[i] * 255
+            
+            # masked = raw * (1 - mask_batch[i]) + np.ones_like(raw) * mask_batch[i] * 255
+            modified = x_batch_modified[i]
+            modified = np.array((modified + 1) * 127.5, dtype=np.uint8)
+            
             img = completion[i]
             img = np.array((img + 1) * 127.5, dtype=np.uint8)
+            
             dst = './output/{}.jpg'.format("{0:06d}".format(cnt))
-            output_image([['Input', masked], ['Output', img], ['Ground Truth', raw]], dst)
+            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw]], dst)
 
 
 def get_points(bounds):
