@@ -8,7 +8,6 @@ import sys
 sys.path.append('..')
 from network256 import Network
 from load import load_test, load
-from train import change_color, change_size, modify_images
 
 
 # Hyperparameters
@@ -124,7 +123,58 @@ def output_image(images, dst):
         plt.xlabel(text)
     plt.savefig(dst)
     plt.close()
+    
+def change_color(img, box):
+    button = img[box[1]:box[3]+1,box[0]:box[2]+1]
+    shift = random.randint(-50, 50)
+    channel = random.randint(0, 2)
+    button[:,:,channel] = button[:,:,channel] + shift
+    #button = button + 100
+    img[box[1]:box[3]+1,box[0]:box[2]+1] = button
+    return img
 
+def change_size(img, box):
+    button = img[box[1]:box[3]+1,box[0]:box[2]+1]
+    height, width, channel = button.shape
+    button = Image.fromarray(button.astype('uint8')).convert('RGB')
+    #button.show()
+    k = random.uniform(0.5, 3)
+    new_width = int(width*k)
+    new_height = int(height*k)
+    button = button.resize((new_width, new_height), Image.ANTIALIAS)
+    
+    left = (new_width - width)/2
+    top = (new_height - height)/2
+    right = (width + new_width)/2
+    bottom = (height + new_height)/2
+    #button.show()
+    button = button.crop((left, top, right, bottom))
+    button = button.resize((width, height), Image.ANTIALIAS)
+    #button.show()
+    img[box[1]:box[3]+1,box[0]:box[2]+1] = np.array(button)
+    return img
+
+def modify_images(train_batch):
+    x_batch = []
+    for i in train_batch:
+        
+        img = i[0].copy()
+        box = i[1].copy()
+        box = [int(x) for x in box]
+        
+        a = box[2] - box[0]
+        b = box[3] - box[1]
+        
+        if (a < 0 or b < 0):
+            chance = random.randint(0,0)
+            print("Wrong button bound!!!")
+        else:
+            chance = random.randint(0,1)
+        if (chance == 0):
+            x_batch.append(change_color(img, box))
+        else:
+            x_batch.append(change_size(img, box))
+    return x_batch
 
 if __name__ == '__main__':
     test()
