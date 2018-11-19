@@ -154,7 +154,7 @@ print(len(train_data))
 train_data = [x for x in train_data if len(x[1]) == 4]
 print(len(train_data))
 
-train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) < 0 or int(x[1][3]) - int(x[1][1]) < 0)]
+train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
 print(len(train_data))
 
 print(len(test_data))
@@ -163,7 +163,7 @@ if len(test_data) < BATCH_SIZE:
     test_data = train_data
 print(len(test_data))
 
-test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) < 0 or int(x[1][3]) - int(x[1][1]) < 0)]
+test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
 print(len(test_data))
 
 step_num = int(len(train_data) / BATCH_SIZE)
