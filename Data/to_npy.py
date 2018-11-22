@@ -40,7 +40,7 @@ for path in pbar(paths):
 
 
 x = np.array(x)
-np.random.shuffle(x)
+# np.random.shuffle(x)
 
 p = int(ratio * len(x))
 x_train = x[:p]
