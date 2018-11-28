@@ -24,6 +24,25 @@ print(len(test_data))
 test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
 print(len(test_data))
 
+# Load train and test data.
+train_data, test_data = load("../../Data/UIdata/npy-Crop/")
+
+print(len(train_data))
+train_data = [x for x in train_data if len(x[1]) == 4]
+print(len(train_data))
+
+train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+print(len(train_data))
+
+print(len(test_data))
+test_data = [x for x in test_data if len(x[1]) == 4]
+if len(test_data) < BATCH_SIZE:
+    test_data = train_data
+print(len(test_data))
+
+test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+print(len(test_data))
+
 def test():
     
     x = tf.placeholder(tf.float32, [BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 3])
@@ -57,7 +76,8 @@ def test():
         x_batch_modified = modify_images(test_batch)
         x_batch_modified = np.array([a / 127.5 - 1 for a in x_batch_modified])
         
-        _, mask_batch = get_points([i[1] for i in test_batch])
+        bounds = np.array([i[1] for i in test_batch])
+        _, mask_batch = get_points(bounds)
         completion = sess.run(model.completion, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
         for i in range(BATCH_SIZE):
             cnt += 1
@@ -72,7 +92,7 @@ def test():
             img = np.array((img + 1) * 127.5, dtype=np.uint8)
             
             dst = './output/{}.jpg'.format("{0:06d}".format(cnt))
-            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw]], dst)
+            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw]], dst, bounds[i])
 
 
 def get_points(bounds):
@@ -112,16 +132,17 @@ def get_points(bounds):
     return np.array(points), np.array(mask)
     
 
-def output_image(images, dst):
-    fig = plt.figure()
+def output_image(images, dst, box):
+    fig = plt.figure(figsize=(12,4))
     for i, image in enumerate(images):
         text, img = image
         fig.add_subplot(1, 3, i + 1)
         plt.imshow(img)
-        plt.tick_params(labelbottom='off')
-        plt.tick_params(labelleft='off')
+        plt.tick_params(labelbottom=False)
+        plt.tick_params(labelleft=False)
         plt.gca().get_xaxis().set_ticks_position('none')
         plt.gca().get_yaxis().set_ticks_position('none')
+        plt.gca().add_patch(plt.Rectangle((box[0],box[1]),box[2] - box[0],box[3] - box[1],linewidth=1,edgecolor='g',facecolor='none'))
         plt.xlabel(text)
     plt.savefig(dst)
     plt.close()
