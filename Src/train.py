@@ -264,7 +264,7 @@ while True:
         
         points_batch, mask_batch = get_points([i[1] for i in test_batch])
         
-        completion = sess.run(model.completion, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
+        completion = sess.run(model.imitation, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
         sample = np.array((completion[0] + 1) * 127.5, dtype=np.uint8)
         cv2.imwrite('./output/{}.jpg'.format("{0:06d}".format(sess.run(epoch))), cv2.cvtColor(sample, cv2.COLOR_RGB2BGR))
         
