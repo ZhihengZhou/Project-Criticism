@@ -7,7 +7,7 @@ class Network:
         self.completion = self.imitation * mask + x * (1 - mask)
         self.real = self.discriminator(x, local_x, reuse=False)
         self.fake = self.discriminator(global_completion, local_completion, reuse=True)
-        self.g_loss = self.calc_g_loss(x, self.completion)
+        self.g_loss = self.calc_g_loss(x, self.imitation)
         self.d_loss = self.calc_d_loss(self.real, self.fake)
         self.g_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='generator')
         self.d_variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='discriminator')

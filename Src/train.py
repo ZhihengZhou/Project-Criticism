@@ -122,7 +122,7 @@ IMAGE_SIZE = 256
 LOCAL_SIZE = 64
 LEARNING_RATE = 1e-3
 BATCH_SIZE = 16
-PRETRAIN_EPOCH = 50
+PRETRAIN_EPOCH = 200
 
 x = tf.placeholder(tf.float32, [BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 3])
 x_modified = tf.placeholder(tf.float32, [BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 3])
@@ -210,7 +210,7 @@ while True:
         
         points_batch, mask_batch = get_points([i[1] for i in test_batch])
         
-        completion = sess.run(model.completion, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
+        completion = sess.run(model.imitation, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
         sample = np.array((completion[0] + 1) * 127.5, dtype=np.uint8)
         cv2.imwrite('./output/{}.jpg'.format("{0:06d}".format(sess.run(epoch))), cv2.cvtColor(sample, cv2.COLOR_RGB2BGR))
         
