@@ -78,7 +78,7 @@ def test():
         
         bounds = np.array([i[1] for i in test_batch])
         _, mask_batch = get_points(bounds)
-        completion = sess.run(model.completion, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
+        completion = sess.run(model.imitation, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
         for i in range(BATCH_SIZE):
             cnt += 1
             raw = x_batch[i]
