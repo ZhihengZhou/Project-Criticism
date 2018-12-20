@@ -110,7 +110,7 @@ def modify_images(train_batch):
         if (a < 0 or b < 0):
             chance = random.randint(0,0)
         else:
-            chance = random.randint(0,1)
+            chance = random.randint(0,0)
         if (chance == 0):
             x_batch.append(change_color(img, box))
         else:
