@@ -24,24 +24,25 @@ print(len(test_data))
 test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
 print(len(test_data))
 
+
 # Load train and test data.
-train_data, test_data = load("../../Data/UIdata/npy-Crop/")
-
-print(len(train_data))
-train_data = [x for x in train_data if len(x[1]) == 4]
-print(len(train_data))
-
-train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
-print(len(train_data))
-
-print(len(test_data))
-test_data = [x for x in test_data if len(x[1]) == 4]
-if len(test_data) < BATCH_SIZE:
-    test_data = train_data
-print(len(test_data))
-
-test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
-print(len(test_data))
+#train_data, test_data = load("../../Data/UIdata/npy-Crop/")
+#
+#print(len(train_data))
+#train_data = [x for x in train_data if len(x[1]) == 4]
+#print(len(train_data))
+#
+#train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+#print(len(train_data))
+#
+#print(len(test_data))
+#test_data = [x for x in test_data if len(x[1]) == 4]
+#if len(test_data) < BATCH_SIZE:
+#    test_data = train_data
+#print(len(test_data))
+#
+#test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+#print(len(test_data))
 
 def test():
     
@@ -83,15 +84,19 @@ def test():
             cnt += 1
             raw = x_batch[i]
             raw = np.array((raw + 1) * 127.5, dtype=np.uint8)
+            cv2.imwrite('./real/{}.jpg'.format("{0:06d}".format(cnt)), raw)
             
             # masked = raw * (1 - mask_batch[i]) + np.ones_like(raw) * mask_batch[i] * 255
             modified = x_batch_modified[i]
             modified = np.array((modified + 1) * 127.5, dtype=np.uint8)
+            cv2.imwrite('./input/{}.jpg'.format("{0:06d}".format(cnt)), modified)
             
             img = completion[i]
             img = np.array((img + 1) * 127.5, dtype=np.uint8)
+            cv2.imwrite('./output/{}.jpg'.format("{0:06d}".format(cnt)), img)
+
             
-            dst = './output/{}.jpg'.format("{0:06d}".format(cnt))
+            dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
             output_image([['Input', modified], ['Output', img], ['Ground Truth', raw]], dst, bounds[i])
 
 
@@ -192,7 +197,7 @@ def modify_images(train_batch):
             chance = random.randint(0,0)
             print("Wrong button bound!!!")
         else:
-            chance = random.randint(0,1)
+            chance = random.randint(0,0)
         if (chance == 0):
             x_batch.append(change_color(img, box))
         else:
