@@ -6,6 +6,7 @@ import os
 import matplotlib.pyplot as plt
 import sys
 import random
+import pickle
 from PIL import Image
 sys.path.append('..')
 from network256 import Network
@@ -26,6 +27,7 @@ print(len(test_data))
 
 
 # Load train and test data.
+
 #train_data, test_data = load("../../Data/UIdata/npy-Crop/")
 #
 #print(len(train_data))
@@ -64,8 +66,9 @@ def test():
 
     np.random.shuffle(test_data)
     
-
     step_num = int(len(test_data) / BATCH_SIZE)
+    
+    metric = []
 
     cnt = 0
     for i in tqdm.tqdm(range(step_num)):
@@ -82,6 +85,7 @@ def test():
         completion = sess.run(model.imitation, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
         for i in range(BATCH_SIZE):
             cnt += 1
+            
             raw = x_batch[i]
             raw = np.array((raw + 1) * 127.5, dtype=np.uint8)
             cv2.imwrite('./real/{}.jpg'.format("{0:06d}".format(cnt)), raw)
@@ -94,10 +98,26 @@ def test():
             img = completion[i]
             img = np.array((img + 1) * 127.5, dtype=np.uint8)
             cv2.imwrite('./output/{}.jpg'.format("{0:06d}".format(cnt)), img)
-
+            
+            original_mask = mask_batch[i]
+            original_mask = original_mask == 1
+            in_int = np.array(modified, dtype=int)
+            out_int = np.array(img, dtype=int)
+            delta = in_int - out_int
+            change = delta > 10
+            change_mask = change[:,:,0] + change[:,:,1] + change[:,:,2]
+            intersection = np.sum(original_mask * change_mask)
+            union = np.sum(original_mask + change_mask)
+            IoU = intersection/union
+            metric.append((intersection, union, IoU))
             
             dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
             output_image([['Input', modified], ['Output', img], ['Ground Truth', raw]], dst, bounds[i])
+
+    with open("./metric.txt", "wb") as fp:
+        pickle.dump(metric, fp)
+
+
 
 
 def get_points(bounds):
