@@ -115,7 +115,7 @@ def test():
             output_image([['Input', modified], ['Output', img], ['Ground Truth', raw]], dst, bounds[i])
 
     with open("./metric.txt", "wb") as fp:
-        pickle.dump(metric, fp)
+        pickle.dump(metric, fp, protocol=2)
 
 
 
