@@ -102,7 +102,7 @@ def test():
             IoU = intersection/union
             metric.append((change_num, mask_num, intersection, union, IoU))
 
-            print(original_mask.shape, change_mask.shape, (original_mask * change_mask).shape)
+            #print(original_mask.shape, change_mask.shape, (original_mask * change_mask).shape)
             
             dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
             output_image([['Input', modified], ['Output', img], ['Ground Truth', raw]], dst, bounds[i])
