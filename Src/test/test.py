@@ -28,23 +28,23 @@ print(len(test_data))
 
 # Load train and test data.
 
-#train_data, test_data = load("../../Data/UIdata/npy-Crop/")
-#
-#print(len(train_data))
-#train_data = [x for x in train_data if len(x[1]) == 4]
-#print(len(train_data))
-#
-#train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
-#print(len(train_data))
-#
-#print(len(test_data))
-#test_data = [x for x in test_data if len(x[1]) == 4]
-#if len(test_data) < BATCH_SIZE:
-#    test_data = train_data
-#print(len(test_data))
-#
-#test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
-#print(len(test_data))
+train_data, test_data = load("../../Data/UIdata/npy-Crop/")
+
+print(len(train_data))
+train_data = [x for x in train_data if len(x[1]) == 4]
+print(len(train_data))
+
+train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+print(len(train_data))
+
+print(len(test_data))
+test_data = [x for x in test_data if len(x[1]) == 4]
+if len(test_data) < BATCH_SIZE:
+    test_data = train_data
+print(len(test_data))
+
+test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+print(len(test_data))
 
 def test():
     
@@ -101,15 +101,24 @@ def test():
             
             original_mask = mask_batch[i]
             original_mask = original_mask == 1
+            original_mask = np.reshape(original_mask, (256,256))
+            mask_num = np.sum(original_mask)
+            
             in_int = np.array(modified, dtype=int)
             out_int = np.array(img, dtype=int)
+            
             delta = in_int - out_int
-            change = delta > 10
+            threshold = np.sum(delta)/(256*256*3)
+            change = delta > threshold
+            
             change_mask = change[:,:,0] + change[:,:,1] + change[:,:,2]
+            change_num = np.sum(change_mask)
             intersection = np.sum(original_mask * change_mask)
             union = np.sum(original_mask + change_mask)
             IoU = intersection/union
-            metric.append((intersection, union, IoU))
+            metric.append((change_num, mask_num, intersection, union, IoU))
+
+            print(original_mask.shape, change_mask.shape, (original_mask * change_mask).shape)
             
             dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
             output_image([['Input', modified], ['Output', img], ['Ground Truth', raw]], dst, bounds[i])
