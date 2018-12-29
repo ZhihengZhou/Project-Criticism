@@ -28,6 +28,23 @@ print(len(test_data))
 
 # Load train and test data.
 
+#train_data, test_data = load("../../Data/UIdata/npy-Crop/")
+#
+#print(len(train_data))
+#train_data = [x for x in train_data if len(x[1]) == 4]
+#print(len(train_data))
+#
+#train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+#print(len(train_data))
+#
+#print(len(test_data))
+#test_data = [x for x in test_data if len(x[1]) == 4]
+#if len(test_data) < BATCH_SIZE:
+#    test_data = train_data
+#print(len(test_data))
+#
+#test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+#print(len(test_data))
 
 def test():
     
@@ -92,10 +109,11 @@ def test():
             
             delta = in_int - out_int
             delta = abs(delta)
-            threshold = np.sum(delta)/(256*256*3)
-            change = delta > threshold
+            delta = delta[:,:,0] + delta[:,:,1] + delta[:,:,2]
+            threshold = np.sum(delta)/(256*256)
+            change_mask = delta > threshold
             
-            change_mask = change[:,:,0] + change[:,:,1] + change[:,:,2]
+            # change_mask = change[:,:,0] + change[:,:,1] + change[:,:,2]
             change_num = np.sum(change_mask)
             intersection = np.sum(original_mask * change_mask)
             union = np.sum(original_mask + change_mask)
