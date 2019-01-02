@@ -110,20 +110,36 @@ def test():
             delta = in_int - out_int
             delta = abs(delta)
             delta = delta[:,:,0] + delta[:,:,1] + delta[:,:,2]
-            threshold = np.sum(delta)/(256*256)
-            change_mask = delta > threshold
+            threshold_min = np.sum(delta)/(256*256)
+            threshold_max = np.max(delta)/2
+            # print(int(threshold_min), int(threshold_max + 1))
+
+            if threshold_min > threshold_max:
+                threshold_max = np.sum(delta)/(256*256)
+                threshold_min = np.max(delta)/2
             
-            # change_mask = change[:,:,0] + change[:,:,1] + change[:,:,2]
-            change_num = np.sum(change_mask)
-            intersection = np.sum(original_mask * change_mask)
-            union = np.sum(original_mask + change_mask)
-            IoU = intersection/union
-            metric.append((change_num, mask_num, intersection, union, IoU))
+            IoU_max = 0
+            
+            for threshold in range(int(threshold_min), int(threshold_max + 1)):
+            
+                change_mask = delta > threshold
+                # change_mask = change[:,:,0] + change[:,:,1] + change[:,:,2]
+                change_num = np.sum(change_mask)
+                intersection = np.sum(original_mask * change_mask)
+                union = np.sum(original_mask + change_mask)
+                IoU = intersection/union
+            
+                if IoU > IoU_max:
+                    threshold_final = threshold
+                    IoU_max = IoU
+                    change_mask_final = change_mask
+            
+            metric.append((change_num, mask_num, intersection, union, IoU_max, threshold_final))
 
             #print(original_mask.shape, change_mask.shape, (original_mask * change_mask).shape)
             
             dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
-            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw]], dst, bounds[i])
+            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', change_mask_final]], dst, bounds[i])
 
     with open("./metric.txt", "wb") as fp:
         pickle.dump(metric, fp, protocol=2)
@@ -172,7 +188,7 @@ def output_image(images, dst, box):
     fig = plt.figure(figsize=(12,4))
     for i, image in enumerate(images):
         text, img = image
-        fig.add_subplot(1, 3, i + 1)
+        fig.add_subplot(1, len(images), i + 1)
         plt.imshow(img)
         plt.tick_params(labelbottom=False)
         plt.tick_params(labelleft=False)
