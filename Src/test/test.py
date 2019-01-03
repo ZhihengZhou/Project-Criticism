@@ -130,11 +130,14 @@ def test():
                 IoU = intersection/union
             
                 if IoU > IoU_max:
-                    threshold_final = threshold
                     IoU_max = IoU
+                    threshold_final = threshold
+                    change_num_final = change_num
                     change_mask_final = change_mask
+                    intersection_final = intersection
+                    union_final = union
             
-            metric.append((change_num, mask_num, intersection, union, IoU_max, threshold_final))
+            metric.append((change_num_final, mask_num, intersection_final, union_final, IoU_max, threshold_final))
 
             #print(original_mask.shape, change_mask.shape, (original_mask * change_mask).shape)
             
