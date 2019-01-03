@@ -110,8 +110,8 @@ def test():
             delta = in_int - out_int
             delta = abs(delta)
             delta = delta[:,:,0] + delta[:,:,1] + delta[:,:,2]
-            threshold_min = np.sum(delta)/(256*256)
-            threshold_max = np.max(delta)/2
+            threshold_min = np.min(delta)
+            threshold_max = np.max(delta)
             # print(int(threshold_min), int(threshold_max + 1))
 
             if threshold_min > threshold_max:
