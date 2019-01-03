@@ -64,7 +64,7 @@ def test():
     saver = tf.train.Saver()
     saver.restore(sess, '../backup/latest')
 
-    np.random.shuffle(test_data)
+    # np.random.shuffle(test_data)
     
     step_num = int(len(test_data) / BATCH_SIZE)
     
@@ -185,7 +185,7 @@ def get_points(bounds):
     
 
 def output_image(images, dst, box):
-    fig = plt.figure(figsize=(12,4))
+    fig = plt.figure(figsize=(15,4))
     for i, image in enumerate(images):
         text, img = image
         fig.add_subplot(1, len(images), i + 1)
