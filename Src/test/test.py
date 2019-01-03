@@ -201,7 +201,9 @@ def output_image(images, dst, box):
     
 def change_color(img, box):
     button = img[box[1]:box[3]+1,box[0]:box[2]+1]
-    shift = random.randint(-50, 50)
+    shift = random.randint(50, 150)
+    if random.randint(0, 1) == 1:
+        shift *= -1
     channel = random.randint(0, 2)
     button[:,:,channel] = button[:,:,channel] + shift
     #button = button + 100
