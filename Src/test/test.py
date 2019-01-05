@@ -137,7 +137,7 @@ def test():
                     intersection_final = intersection
                     union_final = union
             
-            metric.append((change_num_final, mask_num, intersection_final, union_final, IoU_max, threshold_final))
+            metric.append((change_num_final, mask_num, intersection_final, union_final, IoU_max, threshold_final, threshold_min, threshold_max))
 
             #print(original_mask.shape, change_mask.shape, (original_mask * change_mask).shape)
             
