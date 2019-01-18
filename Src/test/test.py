@@ -28,23 +28,23 @@ print(len(test_data))
 
 # Load train and test data.
 
-#train_data, test_data = load("../../Data/UIdata/npy-Crop/")
-#
-#print(len(train_data))
-#train_data = [x for x in train_data if len(x[1]) == 4]
-#print(len(train_data))
-#
-#train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
-#print(len(train_data))
-#
-#print(len(test_data))
-#test_data = [x for x in test_data if len(x[1]) == 4]
-#if len(test_data) < BATCH_SIZE:
-#    test_data = train_data
-#print(len(test_data))
-#
-#test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
-#print(len(test_data))
+train_data, test_data = load("../../Data/UIdata/npy-Crop/")
+
+print(len(train_data))
+train_data = [x for x in train_data if len(x[1]) == 4]
+print(len(train_data))
+
+train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+print(len(train_data))
+
+print(len(test_data))
+test_data = [x for x in test_data if len(x[1]) == 4]
+if len(test_data) < BATCH_SIZE:
+    test_data = train_data
+print(len(test_data))
+
+test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+print(len(test_data))
 
 def test():
     
@@ -71,8 +71,8 @@ def test():
     metric = []
 
     cnt = 0
-    for i in tqdm.tqdm(range(step_num)):
-        test_batch = test_data[i * BATCH_SIZE:(i + 1) * BATCH_SIZE]
+    for step_index in tqdm.tqdm(range(step_num)):
+        test_batch = test_data[step_index * BATCH_SIZE:(step_index + 1) * BATCH_SIZE]
         
         x_batch = np.array([i[0] for i in test_batch])
         x_batch = np.array([a / 127.5 - 1 for a in x_batch])
@@ -83,23 +83,24 @@ def test():
         bounds = np.array([i[1] for i in test_batch])
         _, mask_batch = get_points(bounds)
         completion = sess.run(model.imitation, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
-        for i in range(BATCH_SIZE):
+        for batch_index in range(BATCH_SIZE):
             cnt += 1
             
-            raw = x_batch[i]
+            raw = x_batch[batch_index]
             raw = np.array((raw + 1) * 127.5, dtype=np.uint8)
             cv2.imwrite('./real/{}.jpg'.format("{0:06d}".format(cnt)), raw)
             
-            # masked = raw * (1 - mask_batch[i]) + np.ones_like(raw) * mask_batch[i] * 255
-            modified = x_batch_modified[i]
+            # masked = raw * (1 - mask_batch[batch_index]) + np.ones_like(raw) * mask_batch[batch_index] * 255
+            modified = x_batch_modified[batch_index]
             modified = np.array((modified + 1) * 127.5, dtype=np.uint8)
             cv2.imwrite('./input/{}.jpg'.format("{0:06d}".format(cnt)), modified)
             
-            img = completion[i]
+            img = completion[batch_index]
             img = np.array((img + 1) * 127.5, dtype=np.uint8)
             cv2.imwrite('./output/{}.jpg'.format("{0:06d}".format(cnt)), img)
             
-            original_mask = mask_batch[i]
+            # Get mannul mask
+            original_mask = mask_batch[batch_index]
             original_mask = original_mask == 1
             original_mask = np.reshape(original_mask, (256,256))
             mask_num = np.sum(original_mask)
@@ -110,39 +111,57 @@ def test():
             delta = in_int - out_int
             delta = abs(delta)
             delta = delta[:,:,0] + delta[:,:,1] + delta[:,:,2]
-            threshold_min = np.min(delta)
-            threshold_max = np.max(delta)
-            # print(int(threshold_min), int(threshold_max + 1))
+            
+            ### Top box amount threshold
+            change_mask_final = delta
+            m_list = delta.flatten()
+            hlist = plt.hist(m_list, bins=255)
+            pixel_sum = 0
+            threshold = 0
+            for i in range(len(hlist[0])-1,-1,-1):
+                pixel_sum += hlist[0][i]
+                if pixel_sum > mask_num:
+                    threshold = i
+                    break
+            change_mask = delta > threshold
+            change_num = np.sum(change_mask)
+            intersection = np.sum(original_mask * change_mask)
+            union = np.sum(original_mask + change_mask)
+            IoU = intersection/union
+            metric.append((change_num, mask_num, intersection, union, IoU, threshold))
+            
+            ### find threshold for max IoU
+#             threshold_min = np.min(delta)
+#             threshold_max = np.max(delta)
 
-            if threshold_min > threshold_max:
-                threshold_max = np.sum(delta)/(256*256)
-                threshold_min = np.max(delta)/2
+#             if threshold_min > threshold_max:
+#                 threshold_max = np.sum(delta)/(256*256)
+#                 threshold_min = np.max(delta)/2
             
-            IoU_max = 0
+#             IoU_max = 0
             
-            for threshold in range(int(threshold_min), int(threshold_max + 1)):
+#             for threshold in range(int(threshold_min), int(threshold_max + 1)):
             
-                change_mask = delta > threshold
-                # change_mask = change[:,:,0] + change[:,:,1] + change[:,:,2]
-                change_num = np.sum(change_mask)
-                intersection = np.sum(original_mask * change_mask)
-                union = np.sum(original_mask + change_mask)
-                IoU = intersection/union
+#                 change_mask = delta > threshold
+#                 # change_mask = change[:,:,0] + change[:,:,1] + change[:,:,2]
+#                 change_num = np.sum(change_mask)
+#                 intersection = np.sum(original_mask * change_mask)
+#                 union = np.sum(original_mask + change_mask)
+#                 IoU = intersection/union
             
-                if IoU > IoU_max:
-                    IoU_max = IoU
-                    threshold_final = threshold
-                    change_num_final = change_num
-                    change_mask_final = change_mask
-                    intersection_final = intersection
-                    union_final = union
-            
-            metric.append((change_num_final, mask_num, intersection_final, union_final, IoU_max, threshold_final, threshold_min, threshold_max))
+#                 if IoU > IoU_max:
+#                     IoU_max = IoU
+#                     threshold_final = threshold
+#                     change_num_final = change_num
+#                     change_mask_final = change_mask
+#                     intersection_final = intersection
+#                     union_final = union
+#             metric.append((change_num_final, mask_num, intersection_final, union_final, IoU_max, threshold_final, threshold_min, threshold_max))
 
             #print(original_mask.shape, change_mask.shape, (original_mask * change_mask).shape)
             
             dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
-            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', change_mask_final]], dst, bounds[i])
+            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', change_mask_final]], dst, bounds[batch_index])
 
     with open("./metric.txt", "wb") as fp:
         pickle.dump(metric, fp, protocol=2)
