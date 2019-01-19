@@ -137,9 +137,9 @@ def test():
             ### Amount threshold
             change_mask_final = delta
             m_list = delta.flatten()
-            hlist = Counter(m_list)
+            h_dic = Counter(m_list)
             for i in range(max(h_dic.keys()), -1, -1):
-                if i in hlist.keys() and hlist[i] > 500:
+                if i in h_dic.keys() and h_dic[i] > 500:
                     threshold = i
                     break
 #            for i in range(len(hlist[0])-1,-1,-1):
