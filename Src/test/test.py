@@ -72,7 +72,7 @@ def test():
 
     cnt = 0
     for step_index in tqdm.tqdm(range(step_num)):
-        print(step_index)
+        # print(step_index)
         test_batch = test_data[step_index * BATCH_SIZE:(step_index + 1) * BATCH_SIZE]
         
         x_batch = np.array([i[0] for i in test_batch])
@@ -85,7 +85,7 @@ def test():
         _, mask_batch = get_points(bounds)
         completion = sess.run(model.imitation, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
         for batch_index in range(BATCH_SIZE):
-            print(batch_index)
+            # print(batch_index)
             cnt += 1
             
             raw = x_batch[batch_index]
