@@ -164,8 +164,8 @@ def test():
             #print(original_mask.shape, change_mask.shape, (original_mask * change_mask).shape)
             
             dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
-            cv2.imwrite('./aggregate/{}.jpg'.format("{0:06d}".format(cnt)), delta/3)
-#            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', change_mask_final]], dst, bounds[batch_index])
+#            cv2.imwrite('./aggregate/{}.jpg'.format("{0:06d}".format(cnt)), delta/3)
+            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', change_mask_final]], dst, bounds[batch_index])
 
     with open("./metric.txt", "wb") as fp:
         pickle.dump(metric, fp, protocol=2)
