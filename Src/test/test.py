@@ -28,23 +28,23 @@ print(len(test_data))
 
 # Load train and test data.
 
-train_data, test_data = load("../../Data/UIdata/npy-Crop/")
-
-print(len(train_data))
-train_data = [x for x in train_data if len(x[1]) == 4]
-print(len(train_data))
-
-train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
-print(len(train_data))
-
-print(len(test_data))
-test_data = [x for x in test_data if len(x[1]) == 4]
-if len(test_data) < BATCH_SIZE:
-    test_data = train_data
-print(len(test_data))
-
-test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
-print(len(test_data))
+#train_data, test_data = load("../../Data/UIdata/npy-Crop/")
+#
+#print(len(train_data))
+#train_data = [x for x in train_data if len(x[1]) == 4]
+#print(len(train_data))
+#
+#train_data = [x for x in train_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+#print(len(train_data))
+#
+#print(len(test_data))
+#test_data = [x for x in test_data if len(x[1]) == 4]
+#if len(test_data) < BATCH_SIZE:
+#    test_data = train_data
+#print(len(test_data))
+#
+#test_data = [x for x in test_data if (int(x[1][2]) - int(x[1][0]) > 0 and int(x[1][3]) - int(x[1][1]) > 0)]
+#print(len(test_data))
 
 def test():
     
@@ -72,6 +72,7 @@ def test():
 
     cnt = 0
     for step_index in tqdm.tqdm(range(step_num)):
+        print(step_index)
         test_batch = test_data[step_index * BATCH_SIZE:(step_index + 1) * BATCH_SIZE]
         
         x_batch = np.array([i[0] for i in test_batch])
@@ -84,6 +85,7 @@ def test():
         _, mask_batch = get_points(bounds)
         completion = sess.run(model.imitation, feed_dict={x: x_batch, x_modified: x_batch_modified, mask: mask_batch, is_training: False})
         for batch_index in range(BATCH_SIZE):
+            print(batch_index)
             cnt += 1
             
             raw = x_batch[batch_index]
@@ -161,7 +163,8 @@ def test():
             #print(original_mask.shape, change_mask.shape, (original_mask * change_mask).shape)
             
             dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
-            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', change_mask_final]], dst, bounds[batch_index])
+            cv2.imwrite('./aggregate/{}.jpg'.format("{0:06d}".format(cnt)), delta/3)
+#            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', change_mask_final]], dst, bounds[batch_index])
 
     with open("./metric.txt", "wb") as fp:
         pickle.dump(metric, fp, protocol=2)
