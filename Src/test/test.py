@@ -132,14 +132,14 @@ def test():
 #            union = np.sum(original_mask + change_mask)
 #            IoU = intersection/union
 #            metric.append((change_num, mask_num, intersection, union, IoU, threshold))
-            
+
             ### Amount threshold
             change_mask_final = delta
             m_list = delta.flatten()
             hlist = plt.hist(m_list, bins=255)
             plt.close()
             for i in range(len(hlist[0])-1,-1,-1):
-                if hlist[0][i] > 100: ## 100， 500， 1000
+                if hlist[0][i] > 500: ## 100， 500， 1000
                     threshold = i
                     break
             change_mask = delta > threshold
