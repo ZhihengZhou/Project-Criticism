@@ -11,6 +11,7 @@ from PIL import Image
 sys.path.append('..')
 from network256 import Network
 from load import load_test, load
+from collections import Counter
 
 
 # Hyperparameters
