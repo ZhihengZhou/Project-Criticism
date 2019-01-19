@@ -136,12 +136,15 @@ def test():
             ### Amount threshold
             change_mask_final = delta
             m_list = delta.flatten()
-            hlist = plt.hist(m_list, bins=255)
-            plt.close()
-            for i in range(len(hlist[0])-1,-1,-1):
-                if hlist[0][i] > 500: ## 100， 500， 1000
+            hlist = Counter(m_list)
+            for i in range(max(h_dic.keys()), -1, -1):
+                if i in hlist.keys() and hlist[i] > 500:
                     threshold = i
                     break
+#            for i in range(len(hlist[0])-1,-1,-1):
+#                if hlist[0][i] > 500: ## 100， 500， 1000
+#                    threshold = i
+#                    break
             change_mask = delta > threshold
             change_num = np.sum(change_mask)
             intersection = np.sum(original_mask * change_mask)
