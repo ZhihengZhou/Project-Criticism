@@ -138,10 +138,20 @@ def test():
             change_mask_final = delta
             m_list = delta.flatten()
             h_dic = dict(Counter(m_list))
-            for i in range(max(h_dic.keys()), -1, -1):
-                if i in h_dic.keys() and h_dic[i] > 30:
-                    threshold = i
-                    break
+#            for i in range(max(h_dic.keys()), -1, -1):
+#                if i in h_dic.keys() and h_dic[i] > 30:
+#                    threshold = i
+#                    break
+
+            pixel_sum = 0
+            threshold = 0
+            for i in range(max(h_dic.keys()),-1,-1):
+                if i in h_dic.keys():
+                    pixel_sum += h_dic[i]
+                    if pixel_sum > mask_num:
+                        threshold = i
+                        break
+
 #            for i in range(len(hlist[0])-1,-1,-1):
 #                if hlist[0][i] > 500: ## 100， 500， 1000
 #                    threshold = i
