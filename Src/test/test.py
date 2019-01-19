@@ -118,6 +118,7 @@ def test():
             change_mask_final = delta
             m_list = delta.flatten()
             hlist = plt.hist(m_list, bins=255)
+            plt.close()
             pixel_sum = 0
             threshold = 0
             for i in range(len(hlist[0])-1,-1,-1):
