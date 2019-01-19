@@ -115,15 +115,31 @@ def test():
             delta = delta[:,:,0] + delta[:,:,1] + delta[:,:,2]
             
             ### Top box amount threshold
+#            change_mask_final = delta
+#            m_list = delta.flatten()
+#            hlist = plt.hist(m_list, bins=255)
+#            plt.close()
+#            pixel_sum = 0
+#            threshold = 0
+#            for i in range(len(hlist[0])-1,-1,-1):
+#                pixel_sum += hlist[0][i]
+#                if pixel_sum > mask_num:
+#                    threshold = i
+#                    break
+#            change_mask = delta > threshold
+#            change_num = np.sum(change_mask)
+#            intersection = np.sum(original_mask * change_mask)
+#            union = np.sum(original_mask + change_mask)
+#            IoU = intersection/union
+#            metric.append((change_num, mask_num, intersection, union, IoU, threshold))
+            
+            ### Amount threshold
             change_mask_final = delta
             m_list = delta.flatten()
             hlist = plt.hist(m_list, bins=255)
             plt.close()
-            pixel_sum = 0
-            threshold = 0
             for i in range(len(hlist[0])-1,-1,-1):
-                pixel_sum += hlist[0][i]
-                if pixel_sum > mask_num:
+                if hlist[0][i] > 100: ## 100， 500， 1000
                     threshold = i
                     break
             change_mask = delta > threshold
@@ -132,6 +148,8 @@ def test():
             union = np.sum(original_mask + change_mask)
             IoU = intersection/union
             metric.append((change_num, mask_num, intersection, union, IoU, threshold))
+
+            
             
             ### find threshold for max IoU
 #             threshold_min = np.min(delta)
