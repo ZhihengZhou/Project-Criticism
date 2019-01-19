@@ -139,7 +139,7 @@ def test():
             m_list = delta.flatten()
             h_dic = Counter(m_list)
             for i in range(max(h_dic.keys()), -1, -1):
-                if i in h_dic.keys() and h_dic[i] > 90:
+                if i in h_dic.keys() and h_dic[i] > 100:
                     threshold = i
                     break
 #            for i in range(len(hlist[0])-1,-1,-1):
