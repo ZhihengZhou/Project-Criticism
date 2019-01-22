@@ -8,7 +8,7 @@ from skimage import transform
 import pickle
 import progressbar
 import difflib
-import imagehash
+# import imagehash
 import distance
 import tqdm
 
@@ -131,7 +131,7 @@ for app_dir in tqdm.tqdm(dirs):
                 for visited in visited_screenshot:
                     seq = difflib.SequenceMatcher(None, class_str, visited[0])
                     ratio = seq.ratio()
-                    if ratio > 0.95:
+                    if ratio > 0.90:
                         visited_flag = True
                         break
                         
