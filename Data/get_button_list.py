@@ -9,7 +9,7 @@ import pickle
 import progressbar
 import difflib
 # import imagehash
-import distance
+# import distance
 import tqdm
 
 # Find node recursively
