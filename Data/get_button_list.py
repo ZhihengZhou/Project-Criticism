@@ -49,6 +49,22 @@ def find_all_element_by_attribute(node, element_name, attribute, find):
 def get_dhash(img):
     return str(imagehash.dhash(img))
 
+def get_attributes(f):
+    
+    class_list = []
+    while True:
+        data = f.readline()
+        
+        class_type = re.findall(r'class=".*?"', data)
+        if len(class_type) > 0:
+            class_type = re.sub("class=", "", class_type[0])
+            class_type = re.sub('\"', "", class_type)
+            class_type = re.sub("android.", "", class_type)
+            class_list.append(class_type)
+        if not data:
+            break
+    return ' '.join(class_list)
+
 # Main
 os.chdir("UIdata") 
 filenames = os.listdir("./")
@@ -99,14 +115,29 @@ for app_dir in tqdm.tqdm(dirs):
                 continue
             
             ### Remove similar ui
-            visited_flag = False
-            
             ## image dhash
-            im = Image.open(dir_name + "/" + i)
-            dhash_value = get_dhash(im)
-            if dhash_value in visited_screenshot:
+#             im = Image.open(dir_name + "/" + i)
+#             dhash_value = get_dhash(im)
+#             if dhash_value in visited_screenshot:
+#                 continue
+#             visited_screenshot.append(dhash_value)
+            
+           
+            ## String similarity version
+            visited_flag = False
+            # Check duplicate screenshot
+            with open(dir_name + "/" + xml_name[0]) as f:
+                class_str = get_attributes(f)
+                for visited in visited_screenshot:
+                    seq = difflib.SequenceMatcher(None, class_str, visited[0])
+                    ratio = seq.ratio()
+                    if ratio > 0.95:
+                        visited_flag = True
+                        break
+                        
+            if visited_flag:
                 continue
-            visited_screenshot.append(dhash_value)
+            visited_screenshot.append((class_str, app_dir, i))
             
             ### mask screenshot
             count = 0
