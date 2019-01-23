@@ -1,5 +1,5 @@
 import os
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFile
 import matplotlib.pyplot as plt
 import xml.etree.cElementTree as ET 
 import re
