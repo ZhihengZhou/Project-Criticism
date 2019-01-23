@@ -164,9 +164,9 @@ for app_dir in tqdm.tqdm(dirs):
                 masked_count += count
                 
                 # Save button list
-                with open(save_dir_current + "metric.txt", "w") as fp:
-                    fp.write(str(bound_list))
-                    # pickle.dump(bound_list, fp, protocol=2)
+                with open(save_dir_current + "metric.txt", "wb") as fp:
+                    # fp.write(str(bound_list))
+                    pickle.dump(bound_list, fp, protocol=2)
                 
                 # Draw bounds on image
                 drawObject = ImageDraw.Draw(im)
