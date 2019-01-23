@@ -11,6 +11,7 @@ import difflib
 # import imagehash
 # import distance
 import tqdm
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Find node recursively
 def find_all_element_by_attribute(node, element_name, attribute, find):
