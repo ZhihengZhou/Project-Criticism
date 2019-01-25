@@ -26,6 +26,7 @@ x = []
 
 apps = os.listdir("./")
 apps = [i for i in apps if os.path.isdir(i)]
+apps.reverse()
 
 def get_cases(buttons, d):
     buttons = [i for i in buttons if i[0] in target_button_type]
@@ -116,7 +117,7 @@ def takeSecond(elem):
 ### main
 pbar = progressbar.ProgressBar()
 have_test = False
-for app in pbar(reversed(apps)):
+for app in tqdm.tqdm(apps):
     app_image_counter = 0
     os.chdir(app)
     dirs = os.listdir()
