@@ -76,6 +76,6 @@ for result in tqdm.tqdm(test_results):
 print(np.sum(IoU)/len(IoU))
 print(np.sum(recall)/len(recall))
 print(np.sum(precision)/len(precision))
-print(diff_threshold)
+print(threshold)
 
 np.save("precesion.npy", (IoU, recall, precision))
