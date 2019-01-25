@@ -67,4 +67,4 @@ print(np.sum(IoU)/len(IoU))
 print(np.sum(recall)/len(recall))
 print(np.sum(precision)/len(precision))
 
-np.save("precesion.npy", (Iou, recall, precision))
+np.save("precesion.npy", (IoU, recall, precision))
