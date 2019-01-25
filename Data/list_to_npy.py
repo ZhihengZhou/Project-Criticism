@@ -26,7 +26,7 @@ x = []
 
 apps = os.listdir("./")
 apps = [i for i in apps if os.path.isdir(i)]
-apps.reverse()
+#apps.reverse()
 
 def get_cases(buttons, d):
     buttons = [i for i in buttons if i[0] in target_button_type]
@@ -138,31 +138,43 @@ for app in tqdm.tqdm(apps):
     
     os.chdir("../")
     
-    if total_case_counter >= test_cases_no and not have_test:
-        if not os.path.exists('../npy-Crop-multi'):
-            os.mkdir('../npy-Crop-multi')
-        np.save('../npy-Crop-multi/x_test.npy', x)
-        have_test = True
-        x = []
-        print(app)
-        print("Test data process finished!")
+#     if total_case_counter >= test_cases_no and not have_test:
+#         if not os.path.exists('../npy-Crop-multi'):
+#             os.mkdir('../npy-Crop-multi')
+#         np.save('../npy-Crop-multi/x_test.npy', x)
+#         have_test = True
+#         x = []
+#         print(app)
+#         print("Test data process finished!")
 
-    if total_case_counter % 200 == 0:
-        print(total_case_counter)
+print(total_case_counter, len(x))
 
+ratio = 0.9
+p = int(ratio * len(x))
+x_train = x[:p]
+x_test = x[p:]
 
 max_elements = 20000
 if not os.path.exists('../npy-Crop-multi'):
     os.mkdir('../npy-Crop-multi')
+
+# Save test npy
 if len(x_test) > max_elements:
     for count in range(int(len(x_test)/max_elements)):
         np.save('../npy-Crop-multi/x_test_' + str(count) + '.npy', x_test[count*max_elements : (count+1)*max_elements])
-    np.save('../npy-Crop-multi/x_test_' + str(count+1) + '.npy', x_train[(count+1)*max_elements :])
+    np.save('../npy-Crop-multi/x_test_' + str(count+1) + '.npy', x_test[(count+1)*max_elements :])
 else:
     np.save('../npy-Crop-multi/x_test.npy', x_test)
 
+# Save load npy
+if len(x_train) > max_elements:
+    for count in range(int(len(x_train)/max_elements)):
+        np.save('../npy-Crop-multi/x_train_' + str(count) + '.npy', x_train[count*max_elements : (count+1)*max_elements])
+    np.save('../npy-Crop-multi/x_train_' + str(count+1) + '.npy', x_train[(count+1)*max_elements :])
+else:
+    np.save('../npy-Crop-multi/x_train.npy', x_train)
 
-print(total_case_counter)
+print("Process finished!!!")
 
 
 
