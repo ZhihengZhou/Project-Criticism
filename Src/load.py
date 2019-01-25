@@ -16,7 +16,7 @@ def load(dir_='../Data/UIdata/npy-Crop/'):
     
     return np.vstack(x_train), np.vstack(x_test)
 
-def load_test(dir_='../../Data/UIdata/npy-Crop/'):
+def load_test(dir_='../../Data/UIdata/npy-Crop-multi/'):
     files = os.listdir(dir_)
     
     test_files = [x for x in files if "test" in x]
