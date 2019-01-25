@@ -29,7 +29,7 @@ for result in tqdm.tqdm(test_results):
     pixel_sum = 0
     threshold = 0
     # mask_num = (target_bound[2] - target_bound[0] + 1) * (target_bound[3] - target_bound[1] + 1)
-    mask_num = 500
+    mask_num = 1000
     for i in range(max(h_dic.keys()),-1,-1):
         if i in h_dic.keys():
             pixel_sum += h_dic[i]
