@@ -1,6 +1,7 @@
 import numpy as np
 from collections import Counter
 import cv2
+import tqdm
 
 test_results = np.load("test_results.npy")
 
@@ -12,7 +13,7 @@ IoU = []
 recall = []
 precision = []
 
-for result in test_results:
+for result in tqdm.tqdm(test_results):
     delta = result[0]
     target_bound = result[1]
     other_bounds = result[2]
@@ -21,7 +22,7 @@ for result in test_results:
     m_list = delta.flatten()
     h_dic = dict(Counter(m_list))
     for i in range(max(h_dic.keys()),-1,-1):
-        if i in h_dic.keys() and h_dic[i] > 100: # 100, 500, 1000
+        if i in h_dic.keys() and h_dic[i] > 1000: # 100, 500, 1000
             threshold = i
             break
     
@@ -65,3 +66,5 @@ for result in test_results:
 print(np.sum(IoU)/len(IoU))
 print(np.sum(recall)/len(recall))
 print(np.sum(precision)/len(precision))
+
+np.save("precesion.npy", (Iou, recall, precision))
