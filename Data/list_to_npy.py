@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 import pickle
 import tqdm
+import progressbar
 
 os.chdir("./UIdata/Button_List")
 
@@ -113,8 +114,9 @@ def takeSecond(elem):
     return elem[1]
 
 ### main
+pbar = progressbar.ProgressBar()
 have_test = False
-for app in tqdm.tqdm(reversed(apps)):
+for app in pbar(reversed(apps)):
     app_image_counter = 0
     os.chdir(app)
     dirs = os.listdir()
