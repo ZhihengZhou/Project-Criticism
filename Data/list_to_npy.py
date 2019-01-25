@@ -2,6 +2,7 @@ import os
 import numpy as np
 from PIL import Image
 import pickle
+import tqdm
 
 os.chdir("./UIdata/Button_List")
 
@@ -113,7 +114,7 @@ def takeSecond(elem):
 
 ### main
 have_test = False
-for app in reversed(apps):
+for app in tqdm.tqdm(reversed(apps)):
     app_image_counter = 0
     os.chdir(app)
     dirs = os.listdir()
@@ -146,10 +147,17 @@ for app in reversed(apps):
     if total_case_counter % 200 == 0:
         print(total_case_counter)
 
+
+max_elements = 20000
 if not os.path.exists('../npy-Crop-multi'):
     os.mkdir('../npy-Crop-multi')
-np.save('../npy-Crop-multi/x_train.npy', x)
-x = []
+if len(x_test) > max_elements:
+    for count in range(int(len(x_test)/max_elements)):
+        np.save('../npy-Crop-multi/x_test_' + str(count) + '.npy', x_test[count*max_elements : (count+1)*max_elements])
+    np.save('../npy-Crop-multi/x_test_' + str(count+1) + '.npy', x_train[(count+1)*max_elements :])
+else:
+    np.save('../npy-Crop-multi/x_test.npy', x_test)
+
 
 print(total_case_counter)
 
