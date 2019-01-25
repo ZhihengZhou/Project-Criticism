@@ -22,7 +22,7 @@ for result in tqdm.tqdm(test_results):
     m_list = delta.flatten()
     h_dic = dict(Counter(m_list))
     for i in range(max(h_dic.keys()),-1,-1):
-        if i in h_dic.keys() and h_dic[i] > 5000: # 100, 500, 1000
+        if i in h_dic.keys() and h_dic[i] > 64*64: # 100, 500, 1000
             threshold = i
             break
             
@@ -76,5 +76,6 @@ for result in tqdm.tqdm(test_results):
 print(np.sum(IoU)/len(IoU))
 print(np.sum(recall)/len(recall))
 print(np.sum(precision)/len(precision))
+print(diff_threshold)
 
 np.save("precesion.npy", (IoU, recall, precision))
