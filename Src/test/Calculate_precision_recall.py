@@ -21,7 +21,7 @@ for result in test_results:
     m_list = delta.flatten()
     h_dic = dict(Counter(m_list))
     for i in range(max(h_dic.keys()),-1,-1):
-        if i in h_dic.keys() and h_dic[i] > 20000: # 100, 500, 1000
+        if i in h_dic.keys() and h_dic[i] > 100: # 100, 500, 1000
             threshold = i
             break
     
