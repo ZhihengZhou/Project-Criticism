@@ -18,7 +18,7 @@ for result in tqdm.tqdm(test_results):
     target_bound = result[1]
     other_bounds = result[2]
     
-    # Calucuate diff threshold
+    # Calucuate pixel diff threshold
     m_list = delta.flatten()
     h_dic = dict(Counter(m_list))
 #     for i in range(max(h_dic.keys()),-1,-1):
@@ -36,6 +36,7 @@ for result in tqdm.tqdm(test_results):
             if pixel_sum > mask_num:
                 threshold = i
                 break
+    threshold = 10
     
     # Get original mask
     original_mask = np.zeros((delta.shape[1], delta.shape[0]))
