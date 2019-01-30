@@ -42,7 +42,7 @@ for result in tqdm.tqdm(test_results):
     threshold_percent = 0.5
     sum_threshold = threshold_percent*256*256
     pixel_sum = 0
-    for i in range(max(h_dic.keys()),1,1):
+    for i in range(max(h_dic.keys())):
         if i in h_dic.keys():
             pixel_sum += h_dic[i]
             if pixel_sum > sum_threshold:
