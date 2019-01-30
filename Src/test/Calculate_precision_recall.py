@@ -36,7 +36,7 @@ for result in tqdm.tqdm(test_results):
 #             if pixel_sum > mask_num:
 #                 threshold = i
 #                 break
-    threshold = 60
+    threshold = 55
     
     # Get original mask
     original_mask = np.zeros((delta.shape[1], delta.shape[0]))
