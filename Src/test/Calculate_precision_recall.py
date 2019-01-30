@@ -12,6 +12,7 @@ predict_threshold = 0.8
 IoU = []
 recall = []
 precision = []
+threshold_list = []
 
 for result in tqdm.tqdm(test_results):
     delta = result[0]
@@ -19,8 +20,8 @@ for result in tqdm.tqdm(test_results):
     other_bounds = result[2]
     
     # Calucuate pixel diff threshold
-#     m_list = delta.flatten()
-#     h_dic = dict(Counter(m_list))
+    m_list = delta.flatten()
+    h_dic = dict(Counter(m_list))
 # #     for i in range(max(h_dic.keys()),-1,-1):
 # #         if i in h_dic.keys() and h_dic[i] > 64*64: # 100, 500, 1000
 # #             threshold = i
@@ -36,8 +37,18 @@ for result in tqdm.tqdm(test_results):
 #             if pixel_sum > mask_num:
 #                 threshold = i
 #                 break
-    threshold = 53
+
     
+    threshold_percent = 0.5
+    sum_threshold = threshold_percent*256*256
+    pixel_sum = 0
+    for i in range(max(h_dic.keys()),1,1):
+        if i in h_dic.keys():
+            pixel_sum += h_dic[i]
+            if pixel_sum > sum_threshold:
+                threshold = i
+                break
+    threshold_list.append(threshold)
     # Get original mask
     original_mask = np.zeros((delta.shape[1], delta.shape[0]))
     original_mask[target_bound[1]:target_bound[3]+1, target_bound[0]:target_bound[2]+1] = 1
@@ -78,6 +89,6 @@ for result in tqdm.tqdm(test_results):
 print(np.sum(IoU)/len(IoU))
 print(np.sum(recall)/len(recall))
 print(np.sum(precision)/len(precision))
-print(threshold)
+print(np.sum(threshold_list)/len(threshold_list))
 
 np.save("precesion.npy", (IoU, recall, precision))
