@@ -19,23 +19,23 @@ for result in tqdm.tqdm(test_results):
     other_bounds = result[2]
     
     # Calucuate pixel diff threshold
-    m_list = delta.flatten()
-    h_dic = dict(Counter(m_list))
-#     for i in range(max(h_dic.keys()),-1,-1):
-#         if i in h_dic.keys() and h_dic[i] > 64*64: # 100, 500, 1000
-#             threshold = i
-#             break
+#     m_list = delta.flatten()
+#     h_dic = dict(Counter(m_list))
+# #     for i in range(max(h_dic.keys()),-1,-1):
+# #         if i in h_dic.keys() and h_dic[i] > 64*64: # 100, 500, 1000
+# #             threshold = i
+# #             break
             
-    pixel_sum = 0
-    threshold = 0
-    # mask_num = (target_bound[2] - target_bound[0] + 1) * (target_bound[3] - target_bound[1] + 1)
-    mask_num = 10000
-    for i in range(max(h_dic.keys()),-1,-1):
-        if i in h_dic.keys():
-            pixel_sum += h_dic[i]
-            if pixel_sum > mask_num:
-                threshold = i
-                break
+#     pixel_sum = 0
+#     threshold = 0
+#     # mask_num = (target_bound[2] - target_bound[0] + 1) * (target_bound[3] - target_bound[1] + 1)
+#     mask_num = 10000
+#     for i in range(max(h_dic.keys()),-1,-1):
+#         if i in h_dic.keys():
+#             pixel_sum += h_dic[i]
+#             if pixel_sum > mask_num:
+#                 threshold = i
+#                 break
     threshold = 10
     
     # Get original mask
