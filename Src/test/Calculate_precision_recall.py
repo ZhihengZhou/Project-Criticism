@@ -39,7 +39,7 @@ for result in tqdm.tqdm(test_results):
 #                 break
 
     
-    threshold_percent = 0.93
+    threshold_percent = 0.94
     sum_threshold = threshold_percent*256*256
     pixel_sum = 0
     for i in range(max(h_dic.keys())):
