@@ -85,7 +85,8 @@ def test():
         x_batch = np.array([a / 127.5 - 1 for a in x_batch])
         
         # Get modified image and normalised
-        x_batch_modified = modify_images(test_batch)
+        # x_batch_modified = modify_images(test_batch)
+        x_batch_modified = np.array([i[0] for i in test_batch])
         x_batch_modified = np.array([a / 127.5 - 1 for a in x_batch_modified])
         
         # Get modified area bounds and masks
@@ -136,8 +137,8 @@ def test():
             test_results.append((delta, bounds[batch_index], other_bounds[batch_index]))
             
             dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
-            # cv2.imwrite('./aggregate/{}.jpg'.format("{0:06d}".format(cnt)), delta/3)
-            output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', delta]], dst, bounds[batch_index])
+            cv2.imwrite('./aggregate/{}.jpg'.format("{0:06d}".format(cnt)), delta/3)
+            # output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', delta]], dst, bounds[batch_index])
 
     np.save("test_results.npy", test_results)
 
