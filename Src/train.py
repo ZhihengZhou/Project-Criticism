@@ -183,7 +183,6 @@ while True:
     if sess.run(epoch) <= PRETRAIN_EPOCH:
         g_loss_value = 0
         for i in tqdm.tqdm(range(step_num)):
-            print(i)
             train_batch = train_data[i * BATCH_SIZE:(i + 1) * BATCH_SIZE]
             
             x_batch = np.array([i[0] for i in train_batch])
