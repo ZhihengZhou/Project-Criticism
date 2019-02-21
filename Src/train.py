@@ -122,7 +122,7 @@ IMAGE_SIZE = 256
 LOCAL_SIZE = 64
 LEARNING_RATE = 1e-3
 BATCH_SIZE = 16
-PRETRAIN_EPOCH = 100
+PRETRAIN_EPOCH = 50
 
 x = tf.placeholder(tf.float32, [BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 3])
 x_modified = tf.placeholder(tf.float32, [BATCH_SIZE, IMAGE_SIZE, IMAGE_SIZE, 3])
@@ -177,13 +177,13 @@ while True:
     sess.run(tf.assign(epoch, tf.add(epoch, 1)))
     print('epoch: {}'.format(sess.run(epoch)))
     
-    np.random.shuffle(train_data)
+    # np.random.shuffle(train_data)
     
     # Completion
     if sess.run(epoch) <= PRETRAIN_EPOCH:
         g_loss_value = 0
         for i in tqdm.tqdm(range(step_num)):
-            
+            print(i)
             train_batch = train_data[i * BATCH_SIZE:(i + 1) * BATCH_SIZE]
             
             x_batch = np.array([i[0] for i in train_batch])
