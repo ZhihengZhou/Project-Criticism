@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-def load(dir_='../Data/UIdata/npy-Crop/'):
+def load(dir_='../Data/UIdata/npy-Crop-multi/'):
     files = os.listdir(dir_)
     train_files = [x for x in files if "train" in x]
     test_files = [x for x in files if "test" in x]
