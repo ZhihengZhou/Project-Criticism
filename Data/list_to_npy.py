@@ -120,7 +120,7 @@ for app in tqdm.tqdm(apps):
     dirs = os.listdir()
     dirs = [i for i in dirs if os.path.isdir(i)]
     random.shuffle(dirs)
-    dirs = dirs[0:max_images_each_app+1]
+    app_image_counter = 0
     for d in dirs:
         
         with open(os.path.join(d, "metric.txt"), 'rb') as f:
@@ -130,6 +130,10 @@ for app in tqdm.tqdm(apps):
         if len(npy_list) > 0:
             x.extend(npy_list)
             total_case_counter += len(npy_list)
+            app_image_counter += 1
+            
+        if app_image_counter >= max_images_each_app:
+            break
     
     os.chdir("../") # To dir "./Data/UIdata/Button_List"
 
@@ -161,9 +165,3 @@ else:
     np.save('../npy-Crop-multi/x_train.npy', x_train)
 
 print("Process finished!!!")
-
-
-
-
-
-
