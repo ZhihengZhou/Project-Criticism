@@ -177,7 +177,7 @@ while True:
     sess.run(tf.assign(epoch, tf.add(epoch, 1)))
     print('epoch: {}'.format(sess.run(epoch)))
     
-    # np.random.shuffle(train_data)
+    np.random.shuffle(train_data)
     
     # Completion
     if sess.run(epoch) <= PRETRAIN_EPOCH:
