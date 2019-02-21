@@ -30,10 +30,10 @@ apps = [i for i in apps if os.path.isdir(i)]
 #apps.reverse()
 
 def get_cases(buttons, d):
-    buttons = [i for i in buttons if i[0] in target_button_type]
-    buttons = [i for i in buttons if i[1][0] > screenshot_width_min and i[1][1] > screenshot_height_min and i[1][2] < screenshot_width and i[1][3] < screenshot_height]
-    buttons = [i[1] for i in buttons]
-    buttons = [i for i in buttons if i[2] - i[0] < button_max_size and i[3] - i[1] < button_max_size]
+    buttons = [i for i in buttons if i[0] in target_button_type] # Select target type button
+    buttons = [i for i in buttons if i[1][0] > screenshot_width_min and i[1][1] > screenshot_height_min and i[1][2] < screenshot_width and i[1][3] < screenshot_height] # Delete buttons out of the screen
+    buttons = [i[1] for i in buttons] # Delete button type of each element
+    buttons = [i for i in buttons if i[2] - i[0] < button_max_size and i[3] - i[1] < button_max_size] # Delete oversize buttons
     
     button_group = []
     for b1 in buttons:
@@ -122,7 +122,7 @@ for app in tqdm.tqdm(apps):
     os.chdir(app)
     dirs = os.listdir()
     dirs = [i for i in dirs if os.path.isdir(i)]
-    ramdon.shuffle(dirs)
+    random.shuffle(dirs)
     dirs = dirs[0:max_images_each_app]
     for d in dirs:
         
