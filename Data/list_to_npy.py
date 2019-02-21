@@ -4,6 +4,7 @@ from PIL import Image
 import pickle
 import tqdm
 import progressbar
+import random
 
 os.chdir("./UIdata/Button_List")
 
@@ -118,10 +119,11 @@ def takeSecond(elem):
 pbar = progressbar.ProgressBar()
 have_test = False
 for app in tqdm.tqdm(apps):
-    app_image_counter = 0
     os.chdir(app)
     dirs = os.listdir()
     dirs = [i for i in dirs if os.path.isdir(i)]
+    ramdon.shuffle(dirs)
+    dirs = dirs[0:max_images_each_app]
     for d in dirs:
         
         with open(os.path.join(d, "metric.txt"), 'rb') as f:
@@ -131,21 +133,8 @@ for app in tqdm.tqdm(apps):
         if len(npy_list) > 0:
             x.extend(npy_list)
             total_case_counter += len(npy_list)
-            app_image_counter += 1
-
-        if app_image_counter >= max_images_each_app:
-            break
     
-    os.chdir("../")
-    
-#     if total_case_counter >= test_cases_no and not have_test:
-#         if not os.path.exists('../npy-Crop-multi'):
-#             os.mkdir('../npy-Crop-multi')
-#         np.save('../npy-Crop-multi/x_test.npy', x)
-#         have_test = True
-#         x = []
-#         print(app)
-#         print("Test data process finished!")
+    os.chdir("../") # To dir "./Data/UIdata/Button_List"
 
 print(total_case_counter, len(x))
 
