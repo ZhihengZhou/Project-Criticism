@@ -3,7 +3,6 @@ import numpy as np
 from PIL import Image
 import pickle
 import tqdm
-import progressbar
 import random
 
 os.chdir("./UIdata/Button_List")
@@ -116,14 +115,12 @@ def takeSecond(elem):
     return elem[1]
 
 ### main
-pbar = progressbar.ProgressBar()
-have_test = False
 for app in tqdm.tqdm(apps):
     os.chdir(app)
     dirs = os.listdir()
     dirs = [i for i in dirs if os.path.isdir(i)]
     random.shuffle(dirs)
-    dirs = dirs[0:max_images_each_app]
+    dirs = dirs[0:max_images_each_app+1]
     for d in dirs:
         
         with open(os.path.join(d, "metric.txt"), 'rb') as f:
