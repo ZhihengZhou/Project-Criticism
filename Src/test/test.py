@@ -104,24 +104,26 @@ def test():
             # print(batch_index)
             cnt += 1
             box = bounds[batch_index]
+            x1 = (box[0], box[1])
+            x2 = (box[2], box[3])
             
             # Original image
             raw = x_batch[batch_index]
             raw = np.array((raw + 1) * 127.5, dtype=np.uint8)
-            cv2.rectangle(raw, box[0:2], box[2:], (255,0,0), 2)
+            cv2.rectangle(raw, x1, x2, (255,0,0), 2)
             cv2.imwrite('./real/{}.jpg'.format("{0:06d}".format(cnt)), raw)
             
             # Modified image
             # masked = raw * (1 - mask_batch[batch_index]) + np.ones_like(raw) * mask_batch[batch_index] * 255
             modified = x_batch_modified[batch_index]
             modified = np.array((modified + 1) * 127.5, dtype=np.uint8)
-            cv2.rectangle(modified, box[0:2], box[2:], (255,0,0), 2)
+            cv2.rectangle(modified, x1, x2, (255,0,0), 2)
             cv2.imwrite('./input/{}.jpg'.format("{0:06d}".format(cnt)), modified)
             
             # Model output image
             img = completion[batch_index]
             img = np.array((img + 1) * 127.5, dtype=np.uint8)
-            cv2.rectangle(img, box[0:2], box[2:], (255,0,0), 2)
+            cv2.rectangle(img, x1, x2, (255,0,0), 2)
             cv2.imwrite('./output/{}.jpg'.format("{0:06d}".format(cnt)), img)
             
             # Get original mask
@@ -140,7 +142,7 @@ def test():
             delta = delta/3
             
             test_results.append((delta, bounds[batch_index], other_bounds[batch_index]))
-            cv2.rectangle(delta, box[0:2], box[2:], (255,0,0), 2)
+            cv2.rectangle(delta, x1, x2, (255,0,0), 2)
             
             vis = np.concatenate((raw, modified), axis=1)
             vis = np.concatenate((vis, img), axis=1)
