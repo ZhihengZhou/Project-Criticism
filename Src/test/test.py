@@ -151,7 +151,7 @@ def test():
             
             dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
             
-            if np.max(delta) > 10:
+            if np.max(delta) > 50:
                 cv2.imwrite('./aggregate/{}.jpg'.format("{0:06d}".format(cnt)), vis)
             # output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', delta]], dst, bounds[batch_index])
 
