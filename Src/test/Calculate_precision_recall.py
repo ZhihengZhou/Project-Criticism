@@ -6,8 +6,8 @@ import tqdm
 test_results = np.load("test_results.npy")
 
 # Hyperparameters
-diff_threshold = 0
 predict_threshold = 0.8
+pixel_diff_threshold = 20
 
 IoU = []
 recall = []
@@ -39,23 +39,24 @@ for result in tqdm.tqdm(test_results):
 #                 break
 
     
-    threshold_percent = 0.94
-    sum_threshold = threshold_percent*256*256
-    pixel_sum = 0
-    for i in range(max(h_dic.keys())):
-        if i in h_dic.keys():
-            pixel_sum += h_dic[i]
-            if pixel_sum > sum_threshold:
-                threshold = i
-                break
-    threshold_list.append(threshold)
+#     threshold_percent = 0.94
+#     sum_threshold = threshold_percent*256*256
+#     pixel_sum = 0
+#     for i in range(max(h_dic.keys())):
+#         if i in h_dic.keys():
+#             pixel_sum += h_dic[i]
+#             if pixel_sum > sum_threshold:
+#                 threshold = i
+#                 break
+#     threshold_list.append(threshold)
+
     # Get original mask
     original_mask = np.zeros((delta.shape[1], delta.shape[0]))
     original_mask[target_bound[1]:target_bound[3]+1, target_bound[0]:target_bound[2]+1] = 1
     original_mask = original_mask == 1
     
     # Calculate IoU
-    change_mask = delta > threshold
+    change_mask = delta > pixel_diff_threshold
     change_num = np.sum(change_mask)
     intersection = np.sum(original_mask * change_mask)
     union = np.sum(original_mask + change_mask)
