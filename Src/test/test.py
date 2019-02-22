@@ -85,8 +85,8 @@ def test():
         x_batch = np.array([a / 127.5 - 1 for a in x_batch])
         
         # Get modified image and normalised
-        # x_batch_modified = modify_images(test_batch)
-        x_batch_modified = np.array([i[0] for i in test_batch])
+        x_batch_modified = modify_images(test_batch)
+        # x_batch_modified = np.array([i[0] for i in test_batch])
         x_batch_modified = np.array([a / 127.5 - 1 for a in x_batch_modified])
         
         # Get modified area bounds and masks
