@@ -138,8 +138,8 @@ def test():
             
             delta = in_int - out_int
             delta = abs(delta)
-            delta = delta[:,:,0] + delta[:,:,1] + delta[:,:,2]
-            delta = delta/3
+            #delta = delta[:,:,0] + delta[:,:,1] + delta[:,:,2]
+            #delta = delta/3
             
             test_results.append((delta, bounds[batch_index], other_bounds[batch_index]))
             cv2.rectangle(delta, x1, x2, (255,0,0), 2)
