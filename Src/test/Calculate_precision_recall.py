@@ -6,7 +6,7 @@ import tqdm
 test_results = np.load("test_results.npy")
 
 # Hyperparameters
-predict_threshold = 0.7
+predict_threshold = 0.9
 pixel_diff_threshold = 20
 
 IoU = []
