@@ -138,7 +138,7 @@ def test():
             
             delta = in_int - out_int
             delta = abs(delta)
-            delta = np.array(delta, dtype=uint8)
+            delta = np.array(delta, dtype=np.uint8)
             #delta = delta[:,:,0] + delta[:,:,1] + delta[:,:,2]
             #delta = delta/3
             
