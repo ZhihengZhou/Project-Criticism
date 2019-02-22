@@ -103,21 +103,25 @@ def test():
         for batch_index in range(BATCH_SIZE):
             # print(batch_index)
             cnt += 1
+            box = bounds[batch_index]
             
             # Original image
             raw = x_batch[batch_index]
             raw = np.array((raw + 1) * 127.5, dtype=np.uint8)
+            cv2.rectangle(raw, box[0:2], box[2:], (255,0,0), 2)
             cv2.imwrite('./real/{}.jpg'.format("{0:06d}".format(cnt)), raw)
             
             # Modified image
             # masked = raw * (1 - mask_batch[batch_index]) + np.ones_like(raw) * mask_batch[batch_index] * 255
             modified = x_batch_modified[batch_index]
             modified = np.array((modified + 1) * 127.5, dtype=np.uint8)
+            cv2.rectangle(modified, box[0:2], box[2:], (255,0,0), 2)
             cv2.imwrite('./input/{}.jpg'.format("{0:06d}".format(cnt)), modified)
             
             # Model output image
             img = completion[batch_index]
             img = np.array((img + 1) * 127.5, dtype=np.uint8)
+            cv2.rectangle(img, box[0:2], box[2:], (255,0,0), 2)
             cv2.imwrite('./output/{}.jpg'.format("{0:06d}".format(cnt)), img)
             
             # Get original mask
@@ -133,11 +137,19 @@ def test():
             delta = in_int - out_int
             delta = abs(delta)
             delta = delta[:,:,0] + delta[:,:,1] + delta[:,:,2]
-
+            delta = delta/3
+            
             test_results.append((delta, bounds[batch_index], other_bounds[batch_index]))
+            cv2.rectangle(delta, box[0:2], box[2:], (255,0,0), 2)
+            
+            vis = np.concatenate((raw, modified), axis=1)
+            vis = np.concatenate((vis, img), axis=1)
+            vis = np.concatenate((vis, delta), axis=1)
             
             dst = './aggregate/{}.jpg'.format("{0:06d}".format(cnt))
-            cv2.imwrite('./aggregate/{}.jpg'.format("{0:06d}".format(cnt)), delta/3)
+            
+            
+            cv2.imwrite('./aggregate/{}.jpg'.format("{0:06d}".format(cnt)), vis)
             # output_image([['Input', modified], ['Output', img], ['Ground Truth', raw], ['Mask', delta]], dst, bounds[batch_index])
 
     np.save("test_results.npy", test_results)
