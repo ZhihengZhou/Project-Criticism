@@ -67,7 +67,7 @@ def test():
 
     # Load the model
     saver = tf.train.Saver()
-    saver.restore(sess, '../backup/latest')
+    saver.restore(sess, '../backup/history2/latest')
 
     # np.random.shuffle(test_data)
     
